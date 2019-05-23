@@ -5,7 +5,7 @@
   "main": "dest/simple-jekyll-search.js",
   "scripts": {
     "cypress": "cypress",
-    "lint": "standard",
+    "lint": "standard --fix",
     "pretest": "npm run lint",
     "prebuild": "npm run test",
     "postbuild": "npm run copy-example-code",

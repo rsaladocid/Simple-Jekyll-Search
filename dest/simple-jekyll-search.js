@@ -1,6 +1,6 @@
 /*!
   * Simple-Jekyll-Search v1.7.2 (https://github.com/christian-fei/Simple-Jekyll-Search)
-  * Copyright 2015-2018, Christian Fei
+  * Copyright 2015-2019, Christian Fei
   * Licensed under the MIT License.
   */
 
@@ -300,6 +300,7 @@ var _$src_8 = {};
   var options = {
     searchInput: null,
     resultsContainer: null,
+    contentContainer: null,
     json: [],
     success: Function.prototype,
     searchResultTemplate: '<li><a href="{url}" title="{desc}">{title}</a></li>',
@@ -326,7 +327,9 @@ var _$src_8 = {};
   window.SimpleJekyllSearch = function (_options) {
     var errors = optionsValidator.validate(_options)
     if (errors.length > 0) {
-      throwError('You must specify the following required options: ' + requiredOptions)
+      throwError(
+        'You must specify the following required options: ' + requiredOptions
+      )
     }
 
     options = _$utils_9.merge(options, _options)
@@ -376,10 +379,19 @@ var _$src_8 = {};
     options.resultsContainer.innerHTML += text
   }
 
+  function hideContentContainer () {
+    options.contentContainer.style.display = 'none'
+  }
+
+  function showContentContainer () {
+    options.contentContainer.style.display = ''
+  }
+
   function registerInput () {
     options.searchInput.addEventListener('keyup', function (e) {
       if (isWhitelistedKey(e.which)) {
         emptyResultsContainer()
+        hideContentContainer()
         search(e.target.value)
       }
     })
@@ -388,7 +400,10 @@ var _$src_8 = {};
   function search (query) {
     if (isValidQuery(query)) {
       emptyResultsContainer()
+      hideContentContainer()
       render(_$Repository_4.search(query), query)
+    } else {
+      showContentContainer()
     }
   }
 

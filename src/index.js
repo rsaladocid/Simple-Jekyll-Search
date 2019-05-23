@@ -4,6 +4,7 @@
   var options = {
     searchInput: null,
     resultsContainer: null,
+    contentContainer: null,
     json: [],
     success: Function.prototype,
     searchResultTemplate: '<li><a href="{url}" title="{desc}">{title}</a></li>',
@@ -30,7 +31,9 @@
   window.SimpleJekyllSearch = function (_options) {
     var errors = optionsValidator.validate(_options)
     if (errors.length > 0) {
-      throwError('You must specify the following required options: ' + requiredOptions)
+      throwError(
+        'You must specify the following required options: ' + requiredOptions
+      )
     }
 
     options = utils.merge(options, _options)
@@ -80,10 +83,19 @@
     options.resultsContainer.innerHTML += text
   }
 
+  function hideContentContainer () {
+    options.contentContainer.style.display = 'none'
+  }
+
+  function showContentContainer () {
+    options.contentContainer.style.display = ''
+  }
+
   function registerInput () {
     options.searchInput.addEventListener('keyup', function (e) {
       if (isWhitelistedKey(e.which)) {
         emptyResultsContainer()
+        hideContentContainer()
         search(e.target.value)
       }
     })
@@ -92,7 +104,10 @@
   function search (query) {
     if (isValidQuery(query)) {
       emptyResultsContainer()
+      hideContentContainer()
       render(repository.search(query), query)
+    } else {
+      showContentContainer()
     }
   }
 
