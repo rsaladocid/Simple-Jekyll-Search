@@ -301,6 +301,7 @@ var _$src_8 = {};
     searchInput: null,
     resultsContainer: null,
     contentContainer: null,
+    resultsTitle: null,
     json: [],
     success: Function.prototype,
     searchResultTemplate: '<li><a href="{url}" title="{desc}">{title}</a></li>',
@@ -308,6 +309,8 @@ var _$src_8 = {};
     sortMiddleware: function () {
       return 0
     },
+    resultsTitleText: 'results found',
+    noResultsTitleText: 'No results found',
     noResultsText: 'No results found',
     limit: 10,
     fuzzy: false,
@@ -315,7 +318,7 @@ var _$src_8 = {};
   }
 
   var requiredOptions = ['searchInput', 'resultsContainer', 'json']
-
+  var originalResultsTitleText = ''
   /* removed: var _$Templater_7 = require('./Templater') */;
   /* removed: var _$Repository_4 = require('./Repository') */;
   /* removed: var _$JSONLoader_2 = require('./JSONLoader') */;
@@ -333,6 +336,7 @@ var _$src_8 = {};
     }
 
     options = _$utils_9.merge(options, _options)
+    originalResultsTitleText = options.resultsTitle.innerHTML
 
     _$Templater_7.setOptions({
       template: options.searchResultTemplate,
@@ -387,6 +391,18 @@ var _$src_8 = {};
     options.contentContainer.style.display = ''
   }
 
+  function resetResultsTitleText () {
+    options.resultsTitle.innerHTML = originalResultsTitleText
+  }
+
+  function updateResultsTitleText (len) {
+    if (len === 0) {
+      options.resultsTitle.innerHTML = options.noResultsTitleText
+    } else {
+      options.resultsTitle.innerHTML = len + ' ' + options.resultsTitleText
+    }
+  }
+
   function registerInput () {
     options.searchInput.addEventListener('keyup', function (e) {
       if (isWhitelistedKey(e.which)) {
@@ -404,11 +420,13 @@ var _$src_8 = {};
       render(_$Repository_4.search(query), query)
     } else {
       showContentContainer()
+      resetResultsTitleText()
     }
   }
 
   function render (results, query) {
     var len = results.length
+    updateResultsTitleText(len)
     if (len === 0) {
       return appendToResultsContainer(options.noResultsText)
     }
